@@ -85,7 +85,7 @@ public abstract class MonkeyUtils {
         public boolean checkEnteringPackage(String pkg) {
             //jiajun: allow monkey to enter home screen only when we intentionally want it. 
             //By default, it is not allowed in any other situations.
-            //if(pkg.equals("com.android.launcher3") && Monkey.canEnterHome) return true;
+            if(pkg.equals("com.android.launcher3") && Monkey.canEnterHome) return true;
             if (mInvalidPackages.size() > 0) {
                 if (mInvalidPackages.contains(pkg)) {
                     return false;
