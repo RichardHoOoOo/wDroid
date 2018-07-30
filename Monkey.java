@@ -1064,11 +1064,13 @@ public class Monkey {
         boolean systemCrashed = false;
         
         
-        
+        //Jiajun: Initialize UiAutomation, passing in the packageName
+        MonkeyView.setup(packageName, appName);
         // Jiajun: The set of screens that we has already explored
         // whenever we encounter a screen with WebView, check whether the current screen is 
         // identical to any one of screens in the list. If yes, don't need to inject neural event again.
         // This variable is used to speed up test and will be used later.
+        
         ScreenList screens = new ScreenList(); 
         
         Long startTime = System.nanoTime();
