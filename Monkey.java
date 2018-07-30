@@ -36,6 +36,7 @@ import android.os.SystemClock;
 import android.os.UserHandle;
 import android.view.IWindowManager;
 import android.view.Surface;
+import android.view.WindowManagerPolicy.ScreenOnListener;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -1064,12 +1065,11 @@ public class Monkey {
         
         
         
-        //Jiajun: Initialize UiAutomation, passing in the packageName
-        //MonkeyView.setup(packageName, appName);
+        // Jiajun: The set of screens that we has already explored
         // whenever we encounter a screen with WebView, check whether the current screen is 
-        // identical to final screen. If yes, don't need to inject neural event again.
+        // identical to any one of screens in the list. If yes, don't need to inject neural event again.
         // This variable is used to speed up test and will be used later.
-        Screen finalScreen = null; 
+        ScreenList screens = new ScreenList(); 
         
         Long startTime = System.nanoTime();
         
@@ -1197,163 +1197,164 @@ public class Monkey {
                     }
                 }
                 
-//                Screen screenA = new Screen();
-//                int attempt = 0;
-//                boolean normalExit = false;
-//                while(attempt < MonkeyView.MAX_ATTEMPS) {
-//                    if(MonkeyView.getUILayout(screenA) & MonkeyView.isInAppPackage) {
-//                        normalExit = true;
-//                        break;
-//                    } else {
-//                        attempt++;
-//                        canEnterHome = true;
-//                        MonkeyView.pressHomeThenGoBack(false);
-//                        canEnterHome = false;
-//                    }
-//                }
-//                if(!normalExit) continue;
-                //If the current screen has WebView and is not identical to final screen, inject neural events.
-//                if(screenA.hasWebView() && !screenA.structureAndVisibilityEquals(finalScreen)) {
-//                    boolean hasSoundFromVideo = false;
-//                    if(MonkeyView.hasSoundFromVideo(screenA)) hasSoundFromVideo = true; //check whether there is sound from video
-//                    boolean detectSound = false;
-//                    detectSound = MonkeyView.turnScreenOffAndOn(hasSoundFromVideo); // turn off screen and then turn on
-//                    Screen screenB = new Screen();
-//                    attempt = 0;
-//                    normalExit = false;
-//                    while(attempt < MonkeyView.MAX_ATTEMPS) {
-//                        if(MonkeyView.getUILayout(screenB) & MonkeyView.isInAppPackage) {
-//                            normalExit = true;
-//                            break;
-//                        } else {
-//                            attempt++;
-//                            canEnterHome = true;
-//                            MonkeyView.pressHomeThenGoBack(false);
-//                            canEnterHome = false;
-//                        }
-//                    }
-//                    if(!normalExit) continue;
-//                    if(detectSound) {
-//                        MonkeyView.reportBug(MonkeyView.HAS_SOUND, screenA, screenB, bugId++, MonkeyView.SCREEN_LOCK);
-//                    }
-//                    if(!MonkeyView.isConsistent(screenA, screenB)) {
-//                        MonkeyView.reportBug(MonkeyView.SCREEN_INCONSISTENT, screenA, screenB, bugId++, MonkeyView.SCREEN_LOCK);
-//                        continue; //If already detect inconsistence, don't inject the following events.
-//                    }
-//                    canEnterHome = true;
-//                    detectSound = MonkeyView.pressHomeThenGoBack(hasSoundFromVideo); // press home button than return to the app
-//                    canEnterHome = false;
-//                    screenB = new Screen();
-//                    attempt = 0;
-//                    normalExit = false;
-//                    while(attempt < MonkeyView.MAX_ATTEMPS) {      
-//                        if(MonkeyView.getUILayout(screenB) & MonkeyView.isInAppPackage) {
-//                            normalExit = true;
-//                            break;
-//                        } else {
-//                            attempt++;
-//                            canEnterHome = true;
-//                            MonkeyView.pressHomeThenGoBack(false);
-//                            canEnterHome = false;
-//                        }
-//                    }
-//                    if(!normalExit) continue;
-//                    if(detectSound) {
-//                        MonkeyView.reportBug(MonkeyView.HAS_SOUND, screenA, screenB, bugId++, MonkeyView.PRESS_HOME);
-//                    }
-//                    if(!MonkeyView.isConsistent(screenA, screenB)) {
-//                        MonkeyView.reportBug(MonkeyView.SCREEN_INCONSISTENT, screenA, screenB, bugId++, MonkeyView.PRESS_HOME);
-//                        continue; //If already detect inconsistence, don't inject the following events.
-//                    }
-//                    int orientation = -1;
-//                    try {
-//                        orientation = mWm.getRotation(); 
-//                    } catch(RemoteException e) {
-//                        e.printStackTrace();
-//                    }
-//                    if(orientation == Surface.ROTATION_0) {
-//                        MonkeyView.rotateScreen(Surface.ROTATION_90);
-//                        screenB = new Screen();
-//                        attempt = 0;
-//                        normalExit = false;
-//                        while(attempt < MonkeyView.MAX_ATTEMPS) { 
-//                            if(MonkeyView.getUILayout(screenB) & MonkeyView.isInAppPackage) {
-//                                normalExit = true;
-//                                break;
-//                            } else {
-//                                attempt++;
-//                                canEnterHome = true;
-//                                MonkeyView.pressHomeThenGoBack(false);
-//                                canEnterHome = false;
-//                            }
-//                        }
-//                        if(!normalExit) continue;
-//                        if(!MonkeyView.isConsistent(screenA, screenB)) {
-//                            MonkeyView.reportBug(MonkeyView.SCREEN_INCONSISTENT, screenA, screenB, bugId++, MonkeyView.ROTATION);
-//                        }
-//                        MonkeyView.rotateScreen(Surface.ROTATION_0);  
-//                        if(screenB.hasWebView()) {
-//                            Screen screenC = new Screen();
-//                            attempt = 0;
-//                            normalExit = false;
-//                            while(attempt < MonkeyView.MAX_ATTEMPS) {
-//                                if(MonkeyView.getUILayout(screenC) & MonkeyView.isInAppPackage) {
-//                                    normalExit = true;
-//                                    break;
-//                                } else {
-//                                    attempt++;
-//                                    canEnterHome = true;
-//                                    MonkeyView.pressHomeThenGoBack(false);
-//                                    canEnterHome = false;
-//                                }
-//                            }
-//                            if(!normalExit) continue;
-//                            if(!MonkeyView.isConsistent(screenB, screenC)) {
-//                                MonkeyView.reportBug(MonkeyView.SCREEN_INCONSISTENT, screenB, screenC, bugId++, MonkeyView.ROTATION);
-//                            }
-//                        }
-//                    } else {
-//                        MonkeyView.rotateScreen(Surface.ROTATION_0);
-//                        screenB = new Screen();
-//                        attempt = 0;
-//                        normalExit = false;
-//                        while(attempt < MonkeyView.MAX_ATTEMPS) {  
-//                            if(MonkeyView.getUILayout(screenB) & MonkeyView.isInAppPackage) {
-//                                normalExit = true;
-//                                break;
-//                            } else {
-//                                attempt++;
-//                                canEnterHome = true;
-//                                MonkeyView.pressHomeThenGoBack(false);
-//                                canEnterHome = false;
-//                            }
-//                        }
-//                        if(!normalExit) continue;
-//                        if(!MonkeyView.isConsistent(screenA, screenB)) {
-//                            MonkeyView.reportBug(MonkeyView.SCREEN_INCONSISTENT, screenA, screenB, bugId++, MonkeyView.ROTATION);
-//                        }
-//                        MonkeyView.rotateScreen(orientation);
-//                        if(screenB.hasWebView()) {
-//                            Screen screenC = new Screen();
-//                            attempt = 0;
-//                            normalExit = false;
-//                            while(attempt < MonkeyView.MAX_ATTEMPS) {
-//                                if(MonkeyView.getUILayout(screenC) & MonkeyView.isInAppPackage) {
-//                                    normalExit = true;
-//                                    break;
-//                                } else {
-//                                    attempt++;
-//                                    canEnterHome = true;
-//                                    MonkeyView.pressHomeThenGoBack(false);
-//                                    canEnterHome = false;
-//                                }
-//                            }
-//                            if(!normalExit) continue;
-//                            if(!MonkeyView.isConsistent(screenB, screenC)) {
-//                                MonkeyView.reportBug(MonkeyView.SCREEN_INCONSISTENT, screenB, screenC, bugId++, MonkeyView.ROTATION);
-//                            }
-//                        }
-//                    }
+                Screen screenA = new Screen();
+                int attempt = 0;
+                boolean normalExit = false;
+                while(attempt < MonkeyView.MAX_ATTEMPS) {
+                    if(MonkeyView.getUILayout(screenA) & MonkeyView.isInAppPackage) {
+                        normalExit = true;
+                        break;
+                    } else {
+                        attempt++;
+                        canEnterHome = true;
+                        MonkeyView.pressHomeThenGoBack(false);
+                        canEnterHome = false;
+                    }
+                }
+                if(!normalExit) continue;
+                //If the current screen has WebView and is not identical to any explored screens, inject neural events.
+                if(screenA.hasWebView() && !screens.contains(screenA)) {
+                    screens.add(screenA);
+                    boolean hasSoundFromVideo = false;
+                    if(MonkeyView.hasSoundFromVideo(screenA)) hasSoundFromVideo = true; //check whether there is sound from video
+                    boolean detectSound = false;
+                    detectSound = MonkeyView.turnScreenOffAndOn(hasSoundFromVideo); // turn off screen and then turn on
+                    Screen screenB = new Screen();
+                    attempt = 0;
+                    normalExit = false;
+                    while(attempt < MonkeyView.MAX_ATTEMPS) {
+                        if(MonkeyView.getUILayout(screenB) & MonkeyView.isInAppPackage) {
+                            normalExit = true;
+                            break;
+                        } else {
+                            attempt++;
+                            canEnterHome = true;
+                            MonkeyView.pressHomeThenGoBack(false);
+                            canEnterHome = false;
+                        }
+                    }
+                    if(!normalExit) continue;
+                    if(detectSound) {
+                        MonkeyView.reportBug(MonkeyView.HAS_SOUND, screenA, screenB, bugId++, MonkeyView.SCREEN_LOCK);
+                    }
+                    if(!MonkeyView.isConsistent(screenA, screenB)) {
+                        MonkeyView.reportBug(MonkeyView.SCREEN_INCONSISTENT, screenA, screenB, bugId++, MonkeyView.SCREEN_LOCK);
+                        continue; //If already detect inconsistence, don't inject the following events.
+                    }
+                    canEnterHome = true;
+                    detectSound = MonkeyView.pressHomeThenGoBack(hasSoundFromVideo); // press home button than return to the app
+                    canEnterHome = false;
+                    screenB = new Screen();
+                    attempt = 0;
+                    normalExit = false;
+                    while(attempt < MonkeyView.MAX_ATTEMPS) {      
+                        if(MonkeyView.getUILayout(screenB) & MonkeyView.isInAppPackage) {
+                            normalExit = true;
+                            break;
+                        } else {
+                            attempt++;
+                            canEnterHome = true;
+                            MonkeyView.pressHomeThenGoBack(false);
+                            canEnterHome = false;
+                        }
+                    }
+                    if(!normalExit) continue;
+                    if(detectSound) {
+                        MonkeyView.reportBug(MonkeyView.HAS_SOUND, screenA, screenB, bugId++, MonkeyView.PRESS_HOME);
+                    }
+                    if(!MonkeyView.isConsistent(screenA, screenB)) {
+                        MonkeyView.reportBug(MonkeyView.SCREEN_INCONSISTENT, screenA, screenB, bugId++, MonkeyView.PRESS_HOME);
+                        continue; //If already detect inconsistence, don't inject the following events.
+                    }
+                    int orientation = -1;
+                    try {
+                        orientation = mWm.getRotation(); 
+                    } catch(RemoteException e) {
+                        e.printStackTrace();
+                    }
+                    if(orientation == Surface.ROTATION_0) {
+                        MonkeyView.rotateScreen(Surface.ROTATION_90);
+                        screenB = new Screen();
+                        attempt = 0;
+                        normalExit = false;
+                        while(attempt < MonkeyView.MAX_ATTEMPS) { 
+                            if(MonkeyView.getUILayout(screenB) & MonkeyView.isInAppPackage) {
+                                normalExit = true;
+                                break;
+                            } else {
+                                attempt++;
+                                canEnterHome = true;
+                                MonkeyView.pressHomeThenGoBack(false);
+                                canEnterHome = false;
+                            }
+                        }
+                        if(!normalExit) continue;
+                        if(!MonkeyView.isConsistent(screenA, screenB)) {
+                            MonkeyView.reportBug(MonkeyView.SCREEN_INCONSISTENT, screenA, screenB, bugId++, MonkeyView.ROTATION);
+                        }
+                        MonkeyView.rotateScreen(Surface.ROTATION_0);  
+                        if(screenB.hasWebView()) {
+                            Screen screenC = new Screen();
+                            attempt = 0;
+                            normalExit = false;
+                            while(attempt < MonkeyView.MAX_ATTEMPS) {
+                                if(MonkeyView.getUILayout(screenC) & MonkeyView.isInAppPackage) {
+                                    normalExit = true;
+                                    break;
+                                } else {
+                                    attempt++;
+                                    canEnterHome = true;
+                                    MonkeyView.pressHomeThenGoBack(false);
+                                    canEnterHome = false;
+                                }
+                            }
+                            if(!normalExit) continue;
+                            if(!MonkeyView.isConsistent(screenB, screenC)) {
+                                MonkeyView.reportBug(MonkeyView.SCREEN_INCONSISTENT, screenB, screenC, bugId++, MonkeyView.ROTATION);
+                            }
+                        }
+                    } else {
+                        MonkeyView.rotateScreen(Surface.ROTATION_0);
+                        screenB = new Screen();
+                        attempt = 0;
+                        normalExit = false;
+                        while(attempt < MonkeyView.MAX_ATTEMPS) {  
+                            if(MonkeyView.getUILayout(screenB) & MonkeyView.isInAppPackage) {
+                                normalExit = true;
+                                break;
+                            } else {
+                                attempt++;
+                                canEnterHome = true;
+                                MonkeyView.pressHomeThenGoBack(false);
+                                canEnterHome = false;
+                            }
+                        }
+                        if(!normalExit) continue;
+                        if(!MonkeyView.isConsistent(screenA, screenB)) {
+                            MonkeyView.reportBug(MonkeyView.SCREEN_INCONSISTENT, screenA, screenB, bugId++, MonkeyView.ROTATION);
+                        }
+                        MonkeyView.rotateScreen(orientation);
+                        if(screenB.hasWebView()) {
+                            Screen screenC = new Screen();
+                            attempt = 0;
+                            normalExit = false;
+                            while(attempt < MonkeyView.MAX_ATTEMPS) {
+                                if(MonkeyView.getUILayout(screenC) & MonkeyView.isInAppPackage) {
+                                    normalExit = true;
+                                    break;
+                                } else {
+                                    attempt++;
+                                    canEnterHome = true;
+                                    MonkeyView.pressHomeThenGoBack(false);
+                                    canEnterHome = false;
+                                }
+                            }
+                            if(!normalExit) continue;
+                            if(!MonkeyView.isConsistent(screenB, screenC)) {
+                                MonkeyView.reportBug(MonkeyView.SCREEN_INCONSISTENT, screenB, screenC, bugId++, MonkeyView.ROTATION);
+                            }
+                        }
+                    }
 //                    MonkeyView.sleep(500);
 //                    finalScreen = new Screen();
 //                    attempt = 0;
@@ -1370,7 +1371,7 @@ public class Monkey {
 //                        }
 //                    }
 //                    if(!normalExit) continue;
-//                }
+                }
             } else {
                 if (!mCountEvents) {
                     cycleCounter++;

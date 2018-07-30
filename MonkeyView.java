@@ -215,12 +215,25 @@ public class MonkeyView {
                     return true;
                 }
             }
+            //Wait at most 5s to let the current screen display some components
+            //This is to avoid some cases when the current screen is mistakenly considered to have
+            //no WebView because the screen itself does not render anything.
+            long startTime = System.nanoTime();
+            long elapsedTime = 0;
+            while((elapsedTime / 1000000) < MAX_WAITING_TIME_FOR_HASSOMETHING) {
+                if(root != null && root.getChildCount() > 0) {
+                    break;
+                } else {
+                    root = getRoot();
+                }
+                elapsedTime = System.nanoTime() - startTime;
+            }
             travaseUITree(root, currentScreen, null, false, null, 0, null);
             //Firstly, check whether the current screen has WebView
             if(currentScreen.hasWebView()) {
                 //Secondly, give at most 5s to let WebView load something
-                long startTime = System.nanoTime();
-                long elapsedTime = 0;
+                startTime = System.nanoTime();
+                elapsedTime = 0;
                 while((elapsedTime / 1000000) < MAX_WAITING_TIME_FOR_HASSOMETHING) {
                     if(currentScreen.hasSomething()) {
                         break;

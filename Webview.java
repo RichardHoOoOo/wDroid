@@ -70,10 +70,12 @@ public class Webview {
         return nodes;
     }
     
+    //"Has something" means WebView has displayed its major contents instead of loading message
     public boolean hasSomething() {
         int num = 0;
         for(Node node: nodes) {
             if(node.hasSomething()) num++;
+            //A WebView has something only if there are more than 3 elements displayed in a WebView, 
             if(num > 3) return true;
         }
         return false;
