@@ -222,6 +222,7 @@ public class MonkeyView {
             long elapsedTime = 0;
             while((elapsedTime / 1000000) < MAX_WAITING_TIME_FOR_HASSOMETHING) {
                 if(root != null && root.getChildCount() > 0) {
+                    System.out.println("Child count: " + root.getChildCount());
                     break;
                 } else {
                     root = getRoot();
@@ -402,6 +403,7 @@ public class MonkeyView {
                 if(traverseUITreeToFindAppList(child, appList)) {
                     return true;
                 }
+                child.recycle();
             }
         }
         return false;
@@ -426,6 +428,7 @@ public class MonkeyView {
                 if(traverseUITreeToFindApp(child)) {
                     return true;
                 }
+                child.recycle();
             }
         }
         return false;
@@ -452,7 +455,12 @@ public class MonkeyView {
                     //set inWebView to be true because we are going to traverse the childern of WebView,
                     //which means we are going to be inside WebView.
                     AccessibilityNodeInfo child = getChild(root, i);
-                    if(child != null) travaseUITree(child, screen, wv, true, sb, i, vb);
+                    if(child != null) {
+                        travaseUITree(child, screen, wv, true, sb, i, vb);
+                        child.recycle();
+                    } else {
+                        screen.setChildIsNull(true);
+                    }
                 }
                 wv.setStructure(sb.toString());
                 wv.setVisibility(vb.toString());
@@ -461,7 +469,12 @@ public class MonkeyView {
                 //otherwise, keep traversing normally
                 for(int i=0; i<root.getChildCount(); i++) {
                     AccessibilityNodeInfo child = getChild(root, i);
-                    if(child != null) travaseUITree(child, screen, null, false, null, 0, null);
+                    if(child != null) {
+                        travaseUITree(child, screen, null, false, null, 0, null);
+                        child.recycle();
+                    } else {
+                        screen.setChildIsNull(true);
+                    }
                 }
             }
         } else {
@@ -506,7 +519,12 @@ public class MonkeyView {
                 //otherwise, keep traversing normally
                 for(int i=0; i<root.getChildCount(); i++) {
                     AccessibilityNodeInfo child = getChild(root, i);
-                    if(child != null) travaseUITree(child, screen, webview, true, structure, i, visibility);
+                    if(child != null) {
+                        travaseUITree(child, screen, webview, true, structure, i, visibility);
+                        child.recycle();
+                    } else {
+                        screen.setChildIsNull(true);
+                    }
                 }
             }
         }

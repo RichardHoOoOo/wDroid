@@ -1203,7 +1203,7 @@ public class Monkey {
                 int attempt = 0;
                 boolean normalExit = false;
                 while(attempt < MonkeyView.MAX_ATTEMPS) {
-                    if(MonkeyView.getUILayout(screenA) & MonkeyView.isInAppPackage) {
+                    if(MonkeyView.getUILayout(screenA) && MonkeyView.isInAppPackage && !screenA.isChildIsNull()) {
                         normalExit = true;
                         break;
                     } else {
@@ -1225,7 +1225,7 @@ public class Monkey {
                     attempt = 0;
                     normalExit = false;
                     while(attempt < MonkeyView.MAX_ATTEMPS) {
-                        if(MonkeyView.getUILayout(screenB) & MonkeyView.isInAppPackage) {
+                        if(MonkeyView.getUILayout(screenB) && MonkeyView.isInAppPackage && !screenB.isChildIsNull()) {
                             normalExit = true;
                             break;
                         } else {
@@ -1250,7 +1250,7 @@ public class Monkey {
                     attempt = 0;
                     normalExit = false;
                     while(attempt < MonkeyView.MAX_ATTEMPS) {      
-                        if(MonkeyView.getUILayout(screenB) & MonkeyView.isInAppPackage) {
+                        if(MonkeyView.getUILayout(screenB) && MonkeyView.isInAppPackage && !screenB.isChildIsNull()) {
                             normalExit = true;
                             break;
                         } else {
@@ -1280,7 +1280,7 @@ public class Monkey {
                         attempt = 0;
                         normalExit = false;
                         while(attempt < MonkeyView.MAX_ATTEMPS) { 
-                            if(MonkeyView.getUILayout(screenB) & MonkeyView.isInAppPackage) {
+                            if(MonkeyView.getUILayout(screenB) && MonkeyView.isInAppPackage && !screenB.isChildIsNull()) {
                                 normalExit = true;
                                 break;
                             } else {
@@ -1300,7 +1300,7 @@ public class Monkey {
                             attempt = 0;
                             normalExit = false;
                             while(attempt < MonkeyView.MAX_ATTEMPS) {
-                                if(MonkeyView.getUILayout(screenC) & MonkeyView.isInAppPackage) {
+                                if(MonkeyView.getUILayout(screenC) && MonkeyView.isInAppPackage && !screenC.isChildIsNull()) {
                                     normalExit = true;
                                     break;
                                 } else {
@@ -1321,7 +1321,7 @@ public class Monkey {
                         attempt = 0;
                         normalExit = false;
                         while(attempt < MonkeyView.MAX_ATTEMPS) {  
-                            if(MonkeyView.getUILayout(screenB) & MonkeyView.isInAppPackage) {
+                            if(MonkeyView.getUILayout(screenB) && MonkeyView.isInAppPackage && !screenB.isChildIsNull()) {
                                 normalExit = true;
                                 break;
                             } else {
@@ -1341,7 +1341,7 @@ public class Monkey {
                             attempt = 0;
                             normalExit = false;
                             while(attempt < MonkeyView.MAX_ATTEMPS) {
-                                if(MonkeyView.getUILayout(screenC) & MonkeyView.isInAppPackage) {
+                                if(MonkeyView.getUILayout(screenC) && MonkeyView.isInAppPackage && !screenC.isChildIsNull()) {
                                     normalExit = true;
                                     break;
                                 } else {

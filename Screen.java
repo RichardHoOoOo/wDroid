@@ -1,5 +1,6 @@
 package com.android.commands.monkey;
 
+import android.R.anim;
 import android.graphics.Bitmap;
 
 import com.android.commands.monkey.Webview;
@@ -14,12 +15,22 @@ import java.util.List;
 public class Screen {
     List<Webview> webviews;
     boolean containsWebView;
+    boolean childIsNull;
     Bitmap screenshot;
     
     public Screen() {
         webviews = new ArrayList<Webview>();
         containsWebView = false;
+        childIsNull = false;
         screenshot = null;
+    }
+    
+    public boolean isChildIsNull() {
+        return this.childIsNull;
+    }
+    
+    public void setChildIsNull(boolean childIsNull) {
+        this.childIsNull = childIsNull;
     }
     
     public boolean hasVisibleWebView() {
@@ -86,6 +97,7 @@ public class Screen {
     public void copy(Screen otherScreen) {
         this.webviews.clear();
         this.containsWebView = false;
+        this.childIsNull = false;
         for(Webview otherWebview: otherScreen.getWebViews()) {
             Webview webview = new Webview();
             webview.setBound(otherWebview.getBound());
@@ -114,6 +126,7 @@ public class Screen {
             this.webviews.add(webview);
         }
         this.containsWebView = otherScreen.hasWebView();
+        this.childIsNull = otherScreen.isChildIsNull();
         this.screenshot = otherScreen.screenshot;
     }
     
