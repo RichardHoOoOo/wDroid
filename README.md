@@ -30,16 +30,16 @@ If you want to use ωDroid in a simple way (i.e., use the built version we alrad
  `sh run.sh emulator-5554 WordPress org.wordpress.android 3600 /Users/abc/org.wordpress.android.apk /Users/abc/output
 `
 
-If you want to understand or modify the source code of ωDroid and build it by yourself, please follwing the steps below:
+If you want to understand or modify the source code of ωDroid and build it by yourself, please following the steps below:
 
-+ Firstly, you should download and build the Android source following the official documentation provided by Android team:
++ Firstly, you should download and build the Android source following the official documentation provided by Android team (This step may take hours):
   - [Requirements](https://source.android.com/setup/build/requirements)
   - [Establishing a Build Environment](https://source.android.com/setup/build/initializing)
   - [Downloading the Source](https://source.android.com/setup/build/downloading)
   - [Preparing to Build](https://source.android.com/setup/build/building)
 + Clone the ωDroid project `git clone https://github.com/RichardHoOoOo/wDroid.git`
 + Replace the content of AndroidSource/development/cmds/monkey/src/com/android/commands/monkey/ with the content of the ωDroid folder your cloned.
-+ Build monkey from the root of the Android source
++ Build monkey from the root of the Android source (This step only takes 1-2 minutes):
   - `source build/envsetup.sh`
   - `lunch aosp_arm-eng`
   - `make monkey -j32`
