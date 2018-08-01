@@ -215,26 +215,32 @@ public class MonkeyView {
                     return true;
                 }
             }
+            //If a pop up window shows up
             //Wait at most 5s to let the current screen display some components
             //This is to avoid some cases when the current screen is mistakenly considered to have
             //no WebView because the screen itself does not render anything.
-            long startTime = System.nanoTime();
-            long elapsedTime = 0;
-            while((elapsedTime / 1000000) < MAX_WAITING_TIME_FOR_HASSOMETHING) {
-                if(root != null && root.getChildCount() > 0) {
-                    System.out.println("Child count: " + root.getChildCount());
-                    break;
-                } else {
-                    root = getRoot();
+            //System.out.println("Child count: " + root.getChildCount());
+            if(root.getChildCount() == 1) {
+                long startTime = System.nanoTime();
+                long elapsedTime = 0;
+                while((elapsedTime / 1000000) < MAX_WAITING_TIME_FOR_HASSOMETHING) {
+                    int numberOfLeaves = countNumberOfLeaves(root);
+                    if(root != null && numberOfLeaves > 2) {
+                        //System.out.println(numberOfLeaves);
+                        break;
+                    } else {
+                        //System.out.println(numberOfLeaves);
+                        root = getRoot();
+                    }
+                    elapsedTime = System.nanoTime() - startTime;
                 }
-                elapsedTime = System.nanoTime() - startTime;
             }
             travaseUITree(root, currentScreen, null, false, null, 0, null);
             //Firstly, check whether the current screen has WebView
             if(currentScreen.hasWebView()) {
                 //Secondly, give at most 5s to let WebView load something
-                startTime = System.nanoTime();
-                elapsedTime = 0;
+                long startTime = System.nanoTime();
+                long elapsedTime = 0;
                 while((elapsedTime / 1000000) < MAX_WAITING_TIME_FOR_HASSOMETHING) {
                     if(currentScreen.hasSomething()) {
                         break;
@@ -403,7 +409,6 @@ public class MonkeyView {
                 if(traverseUITreeToFindAppList(child, appList)) {
                     return true;
                 }
-                child.recycle();
             }
         }
         return false;
@@ -428,10 +433,36 @@ public class MonkeyView {
                 if(traverseUITreeToFindApp(child)) {
                     return true;
                 }
-                child.recycle();
             }
         }
         return false;
+    }
+    
+    /*
+     * Count the number of leaf nodes in the current Screen
+     */
+    private static int countNumberOfLeaves(AccessibilityNodeInfo root) {
+        int count = 0;
+        //If root is a leaf node and its content description is not null
+        Rect r = new Rect();
+        root.getBoundsInScreen(r);
+        boolean isVisible = false;
+        if(r.width() == 0 && r.height() == 0) isVisible = false;
+        else isVisible = true;
+        if(isVisible && root.getChildCount() == 0 && (root.getContentDescription() != null || 
+                root.getText() != null || root.getViewIdResourceName() != null)) {
+            //System.out.println(root);
+            count = 1;
+        } else {
+            //otherwise, count the number of leaf nodes in each child node.
+            for(int i=0; i<root.getChildCount(); i++) {
+                AccessibilityNodeInfo child = getChild(root, i);
+                if(child != null) {
+                    count += countNumberOfLeaves(child);
+                }
+            }
+        }
+        return count;
     }
     
     
@@ -457,7 +488,7 @@ public class MonkeyView {
                     AccessibilityNodeInfo child = getChild(root, i);
                     if(child != null) {
                         travaseUITree(child, screen, wv, true, sb, i, vb);
-                        child.recycle();
+                        //child.recycle();
                     } else {
                         screen.setChildIsNull(true);
                     }
@@ -471,7 +502,7 @@ public class MonkeyView {
                     AccessibilityNodeInfo child = getChild(root, i);
                     if(child != null) {
                         travaseUITree(child, screen, null, false, null, 0, null);
-                        child.recycle();
+                        //child.recycle();
                     } else {
                         screen.setChildIsNull(true);
                     }
@@ -521,7 +552,7 @@ public class MonkeyView {
                     AccessibilityNodeInfo child = getChild(root, i);
                     if(child != null) {
                         travaseUITree(child, screen, webview, true, structure, i, visibility);
-                        child.recycle();
+                        //child.recycle();
                     } else {
                         screen.setChildIsNull(true);
                     }
