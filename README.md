@@ -47,3 +47,6 @@ If you want to understand or modify the source code of ωDroid and build it by y
 + Replace the monkey.jar in the [released version](https://github.com/RichardHoOoOo/wDroid/releases/latest) you downloaded with javalib.jar.
 + Rename javalib.jar to monkey.jar.
 + Execute run.sh following the steps we mentioned before.
+
+# Result
+The result of ωDroid is in the output path you specified. It contains a log file (event trace) and a folder with a bug report and screenshots.
