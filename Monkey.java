@@ -1199,10 +1199,11 @@ public class Monkey {
                     }
                 }
                 
-                Screen screenA = new Screen();
+                Screen screenA = null;
                 int attempt = 0;
                 boolean normalExit = false;
                 while(attempt < MonkeyView.MAX_ATTEMPS) {
+                    screenA = new Screen();
                     if(MonkeyView.getUILayout(screenA) && MonkeyView.isInAppPackage && !screenA.isChildIsNull()) {
                         normalExit = true;
                         break;
@@ -1221,10 +1222,11 @@ public class Monkey {
                     if(MonkeyView.hasSoundFromVideo(screenA)) hasSoundFromVideo = true; //check whether there is sound from video
                     boolean detectSound = false;
                     detectSound = MonkeyView.turnScreenOffAndOn(hasSoundFromVideo); // turn off screen and then turn on
-                    Screen screenB = new Screen();
+                    Screen screenB = null;
                     attempt = 0;
                     normalExit = false;
                     while(attempt < MonkeyView.MAX_ATTEMPS) {
+                        screenB = new Screen();
                         if(MonkeyView.getUILayout(screenB) && MonkeyView.isInAppPackage && !screenB.isChildIsNull()) {
                             normalExit = true;
                             break;
@@ -1246,10 +1248,11 @@ public class Monkey {
                     canEnterHome = true;
                     detectSound = MonkeyView.pressHomeThenGoBack(hasSoundFromVideo); // press home button than return to the app
                     canEnterHome = false;
-                    screenB = new Screen();
+                    screenB = null;
                     attempt = 0;
                     normalExit = false;
-                    while(attempt < MonkeyView.MAX_ATTEMPS) {      
+                    while(attempt < MonkeyView.MAX_ATTEMPS) {   
+                        screenB = new Screen();
                         if(MonkeyView.getUILayout(screenB) && MonkeyView.isInAppPackage && !screenB.isChildIsNull()) {
                             normalExit = true;
                             break;
@@ -1276,10 +1279,11 @@ public class Monkey {
                     }
                     if(orientation == Surface.ROTATION_0) {
                         MonkeyView.rotateScreen(Surface.ROTATION_90);
-                        screenB = new Screen();
+                        screenB = null;
                         attempt = 0;
                         normalExit = false;
                         while(attempt < MonkeyView.MAX_ATTEMPS) { 
+                            screenB = new Screen();
                             if(MonkeyView.getUILayout(screenB) && MonkeyView.isInAppPackage && !screenB.isChildIsNull()) {
                                 normalExit = true;
                                 break;
@@ -1296,10 +1300,11 @@ public class Monkey {
                         }
                         MonkeyView.rotateScreen(Surface.ROTATION_0);  
                         if(screenB.hasWebView()) {
-                            Screen screenC = new Screen();
+                            Screen screenC = null;
                             attempt = 0;
                             normalExit = false;
                             while(attempt < MonkeyView.MAX_ATTEMPS) {
+                                screenC = new Screen();
                                 if(MonkeyView.getUILayout(screenC) && MonkeyView.isInAppPackage && !screenC.isChildIsNull()) {
                                     normalExit = true;
                                     break;
@@ -1317,10 +1322,11 @@ public class Monkey {
                         }
                     } else {
                         MonkeyView.rotateScreen(Surface.ROTATION_0);
-                        screenB = new Screen();
+                        screenB = null;
                         attempt = 0;
                         normalExit = false;
                         while(attempt < MonkeyView.MAX_ATTEMPS) {  
+                            screenB = new Screen();
                             if(MonkeyView.getUILayout(screenB) && MonkeyView.isInAppPackage && !screenB.isChildIsNull()) {
                                 normalExit = true;
                                 break;
@@ -1337,10 +1343,11 @@ public class Monkey {
                         }
                         MonkeyView.rotateScreen(orientation);
                         if(screenB.hasWebView()) {
-                            Screen screenC = new Screen();
+                            Screen screenC = null;
                             attempt = 0;
                             normalExit = false;
                             while(attempt < MonkeyView.MAX_ATTEMPS) {
+                                screenC = new Screen();
                                 if(MonkeyView.getUILayout(screenC) && MonkeyView.isInAppPackage && !screenC.isChildIsNull()) {
                                     normalExit = true;
                                     break;

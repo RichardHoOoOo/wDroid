@@ -16,7 +16,7 @@ public class Screen {
     List<Webview> webviews;
     boolean containsWebView;
     boolean childIsNull;
-    Bitmap screenshot;
+    Bitmap screenshot; //indicate whether a child in the UI model is null when building it
     
     public Screen() {
         webviews = new ArrayList<Webview>();
@@ -98,6 +98,7 @@ public class Screen {
         this.webviews.clear();
         this.containsWebView = false;
         this.childIsNull = false;
+        this.screenshot = null;
         for(Webview otherWebview: otherScreen.getWebViews()) {
             Webview webview = new Webview();
             webview.setBound(otherWebview.getBound());

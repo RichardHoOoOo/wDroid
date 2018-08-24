@@ -218,24 +218,23 @@ public class MonkeyView {
             //If a pop up window shows up
             //Wait at most 5s to let the current screen display some components
             //This is to avoid some cases when the current screen is mistakenly considered to have
-            //no WebView because the screen itself does not render anything.
+            //no WebView because the pop up window shows.
             //System.out.println("Child count: " + root.getChildCount());
             if(root.getChildCount() == 1) {
                 long startTime = System.nanoTime();
                 long elapsedTime = 0;
                 while((elapsedTime / 1000000) < MAX_WAITING_TIME_FOR_HASSOMETHING) {
-                    int numberOfLeaves = countNumberOfLeaves(root);
-                    if(root != null && numberOfLeaves > 2) {
-                        //System.out.println(numberOfLeaves);
+                    if(root != null && (root.getChildCount() > 1 || countNumberOfLeaves(root) > 2)) {
                         break;
                     } else {
-                        //System.out.println(numberOfLeaves);
                         root = getRoot();
                     }
                     elapsedTime = System.nanoTime() - startTime;
                 }
+            } 
+            if(root != null) {
+                travaseUITree(root, currentScreen, null, false, null, 0, null);
             }
-            travaseUITree(root, currentScreen, null, false, null, 0, null);
             //Firstly, check whether the current screen has WebView
             if(currentScreen.hasWebView()) {
                 //Secondly, give at most 5s to let WebView load something
